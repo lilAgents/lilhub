@@ -1,0 +1,82 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import LinkCard from "../components/LinkCard.astro";
+import Footer from "../components/Footer.astro";
+import profile from "../content/profile.json";
+
+// This is the linktree itself: the page each lilHub owner publishes. It reads
+// the single source of truth (src/content/profile.json, edited at /admin) and
+// renders the avatar, name, tagline, bio, and link cards. The brand color in
+// profile.theme.primary drives the whole palette via Layout's injectTheme.
+
+interface Link {
+  title: string;
+  subtitle?: string;
+  url: string;
+  icon?: string;
+}
+
+const name = (profile.name || "Your Name").trim();
+const title = (profile.title || "").trim();
+const description = (profile.description || "").trim();
+const avatar = profile.avatar || "/uploads/avatar-placeholder.svg";
+const showAttribution = profile.showAttribution !== false;
+const links = (profile.links ?? []).filter((l: Link) => l && l.url) as Link[];
+
+// The page title is the owner's name; the meta description is their bio (or
+// tagline) so search and social previews describe them, not the product.
+const pageDescription = description || title || `${name} on lilHub`;
+---
+
+<Layout
+  title={name}
+  description={pageDescription}
+  favicon="/favicon.svg"
+  ogImage="/og.png"
+>
+  <div
+    class="min-h-screen flex flex-col items-center justify-center py-8 px-4 bg-background text-foreground"
+  >
+    <ThemeToggle />
+
+    <main class="w-full max-w-md mx-auto flex flex-col items-center">
+      <header class="flex flex-col items-center">
+        <img
+          src={avatar}
+          alt={`${name} profile photo`}
+          class="w-20 h-20 object-cover rounded-full mb-4"
+          width="80"
+          height="80"
+        />
+
+        <h1 class="text-2xl font-semibold text-foreground mb-1">{name}</h1>
+
+        {title && <p class="text-sm font-medium text-foreground mb-1">{title}</p>}
+
+        {
+          description && (
+            <p class="text-sm text-center text-muted-foreground max-w-xs mb-4">
+              {description}
+            </p>
+          )
+        }
+      </header>
+
+      <div class="w-full space-y-3 mt-2">
+        {
+          links.map((link) => (
+            <LinkCard
+              title={link.title}
+              subtitle={link.subtitle}
+              url={link.url}
+              icon={link.icon}
+            />
+          ))
+        }
+      </div>
+    </main>
+
+    <Footer show={showAttribution} />
+  </div>
+</Layout>

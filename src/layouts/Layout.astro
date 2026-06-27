@@ -1,0 +1,103 @@
+---
+import "../styles/global.css";
+import { themeToCss } from "../lib/theme";
+import profile from "../content/profile.json";
+
+interface Props {
+  title: string;
+  description?: string;
+  favicon?: string;
+  noIndex?: boolean;
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>;
+  injectTheme?: boolean;
+}
+
+const {
+  title,
+  description = "",
+  favicon = "/favicon.svg",
+  noIndex = false,
+  ogImage,
+  jsonLd,
+  injectTheme = true,
+} = Astro.props;
+
+const site = Astro.site ?? new URL("https://lilhub.me");
+const canonical = new URL(Astro.url.pathname, site).href;
+
+// Absolute OG image URL when one is supplied (OG/Twitter require absolute URLs).
+const ogImageUrl = ogImage ? new URL(ogImage, site).href : undefined;
+
+// Derive the light + dark palette from the user's single brand color and inject
+// it so the chosen color actually drives the page (see src/lib/theme.ts).
+// When injectTheme is false (e.g. /example renders its own per-section scoped
+// themes), skip the global override so it does not fight the scoped styles.
+const primary = (profile as { theme?: { primary?: string } })?.theme?.primary;
+const themeCss = injectTheme && primary ? themeToCss(primary) : "";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noIndex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:site_name" content="lilHub" />
+    {description && <meta property="og:description" content={description} />}
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta
+      name="twitter:card"
+      content={ogImageUrl ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    <!--
+      No-flash theme script. Runs before the body paints so the page never
+      flickers from light to dark. Defaults to the saved choice, otherwise to
+      the operating system preference.
+    -->
+    <script is:inline>
+      (function () {
+        document.documentElement.classList.add("js-reveal");
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          var dark = stored ? stored === "dark" : prefersDark;
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (e) {
+          // localStorage may be unavailable; fall back to light mode.
+        }
+      })();
+    </script>
+
+    {
+      jsonLd && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
+
+    {themeCss && <style is:inline set:html={themeCss}></style>}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
