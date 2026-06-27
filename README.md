@@ -1,6 +1,6 @@
 # Deploy your own lilHub
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/lilAgents/lilhub-template)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/lilAgents/lilhub)
 
 lilHub is your own link in bio, owned by you. It is a clean, fast links page that
 lives on your own GitHub and your own free Netlify site. No subscription, no
