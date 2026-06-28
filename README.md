@@ -40,4 +40,4 @@ it on your own domain like `links.yourname.com` whenever you want. See
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Made with care by [lilAgents](https://lilagents.com).
+MIT. See [LICENSE](LICENSE). Made with love by [lilAgents](https://lilagents.com).

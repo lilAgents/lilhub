@@ -1,15 +1,3 @@
----
-// Sveltia CMS admin shell. This page is the editor for your lilHub: it loads
-// Sveltia from the unpkg CDN and reads its collection config from
-// /admin/config.yml (in public/). Saves write back to src/content/profile.json
-// in your repo through the GitHub backend (authenticated via the shared
-// lilAgents auth broker), or directly to disk in local development.
-//
-// Rendered as a standalone HTML page (no site Layout) because Sveltia owns the
-// whole document. Marked noindex so the editor never shows up in search.
-export const prerender = true;
----
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,9 +5,10 @@ export const prerender = true;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <!--
-      Content-Security-Policy for the admin shell. Sveltia is loaded from unpkg
-      and talks to the GitHub API and the lilAgents auth broker, so those origins
-      are allowlisted here. Uploaded media and avatars can be any https image.
+      Content-Security-Policy for the admin shell. Sveltia loads from unpkg and
+      talks to the GitHub API and the shared lilAgents auth broker, so those
+      origins are allowlisted here. Uploaded media and avatars can be any https
+      image.
     -->
     <meta
       http-equiv="Content-Security-Policy"
@@ -28,6 +17,14 @@ export const prerender = true;
     <title>Content Manager</title>
   </head>
   <body>
+    <!--
+      Sveltia CMS admin shell. This is a STATIC file in public/ on purpose, not
+      an Astro page: Astro processes <script> tags in .astro files and would
+      bundle this loader away, leaving /admin a blank page. Serving it statically
+      is the canonical Sveltia pattern (matches our other sites). The collection
+      config and GitHub sign-in (through the shared lilAgents auth broker) come
+      from /admin/config.yml.
+    -->
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
   </body>
 </html>
