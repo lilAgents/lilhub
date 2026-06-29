@@ -184,7 +184,6 @@ async function svgToPng(svg: string): Promise<Buffer> {
 
 export interface ProfileLike {
   name?: string;
-  title?: string;
   description?: string;
   avatar?: string;
   theme?: { primary?: string };
@@ -200,7 +199,7 @@ export async function renderProfileOg(
   profile: ProfileLike,
 ): Promise<Buffer> {
   const name = (profile.name || "Your Name").trim();
-  const oneLiner = (profile.description || profile.title || "").trim();
+  const oneLiner = (profile.description || "").trim();
   const primary = profile.theme?.primary || LILHUB_BLUE;
   const palette = ogPalette(primary);
   const fonts = await loadFonts();

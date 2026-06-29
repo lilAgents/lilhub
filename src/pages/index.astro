@@ -7,7 +7,7 @@ import profile from "../content/profile.json";
 
 // This is the linktree itself: the page each lilHub owner publishes. It reads
 // the single source of truth (src/content/profile.json, edited at /admin) and
-// renders the avatar, name, tagline, bio, and link cards. The brand color in
+// renders the avatar, name, bio, and link cards. The brand color in
 // profile.theme.primary drives the whole palette via Layout's injectTheme.
 
 interface Link {
@@ -18,23 +18,24 @@ interface Link {
 }
 
 const name = (profile.name || "Your Name").trim();
-const title = (profile.title || "").trim();
 const description = (profile.description || "").trim();
 const avatar = profile.avatar || "/uploads/avatar-placeholder.svg";
 const showAttribution = profile.showAttribution !== false;
 const links = (profile.links ?? []).filter((l: Link) => l && l.url) as Link[];
 
-// The page title is the owner's name; the meta description is their bio (or
-// tagline) so search and social previews describe them, not the product.
-const pageDescription = description || title || `${name} on lilHub`;
+// SEO title + description. Default the title to "Name | lilHub" and the
+// description to the owner's bio, but let either be overridden from /admin
+// (the Meta Title / Meta Description fields) when they want full control.
+const metaTitle =
+  ((profile as { metaTitle?: string }).metaTitle || "").trim() ||
+  `${name} | lilHub`;
+const metaDescription =
+  ((profile as { metaDescription?: string }).metaDescription || "").trim() ||
+  description ||
+  `${name} on lilHub`;
 ---
 
-<Layout
-  title={name}
-  description={pageDescription}
-  favicon="/favicon.svg"
-  ogImage="/og.png"
->
+<Layout title={metaTitle} description={metaDescription} ogImage="/og.png">
   <div
     class="min-h-screen flex flex-col items-center justify-center py-8 px-4 bg-background text-foreground"
   >
@@ -51,8 +52,6 @@ const pageDescription = description || title || `${name} on lilHub`;
         />
 
         <h1 class="text-2xl font-semibold text-foreground mb-1">{name}</h1>
-
-        {title && <p class="text-sm font-medium text-foreground mb-1">{title}</p>}
 
         {
           description && (

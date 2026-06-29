@@ -42,7 +42,6 @@ collections:
         file: src/content/profile.json
         fields:
           - { name: name, label: Name, widget: string }
-          - { name: title, label: Title, widget: string, required: false }
           - { name: description, label: Description, widget: text }
           - { name: avatar, label: Profile Picture, widget: image }
           - {
@@ -102,3 +101,5 @@ collections:
                   - reddit
                   - apple
                   - mastodon
+          - { name: metaTitle, label: "Meta Title (leave blank to use your name + lilHub)", widget: string, required: false }
+          - { name: metaDescription, label: "Meta Description (leave blank to use your bio above)", widget: text, required: false }

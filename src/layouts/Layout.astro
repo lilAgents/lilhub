@@ -35,6 +35,17 @@ const ogImageUrl = ogImage ? new URL(ogImage, site).href : undefined;
 // themes), skip the global override so it does not fight the scoped styles.
 const primary = (profile as { theme?: { primary?: string } })?.theme?.primary;
 const themeCss = injectTheme && primary ? themeToCss(primary) : "";
+
+// Favicon + apple-touch icon become the owner's avatar once they set one, so
+// their published page carries their own picture as its tab and bookmark icon.
+// Falls back to the lilHub defaults while the avatar is still the placeholder.
+const rawAvatar = (profile as { avatar?: string })?.avatar;
+const userAvatar =
+  rawAvatar && rawAvatar !== "/uploads/avatar-placeholder.svg"
+    ? rawAvatar
+    : null;
+const iconHref = userAvatar ?? favicon;
+const appleTouchHref = userAvatar ?? "/apple-touch-icon.png";
 ---
 
 <!doctype html>
@@ -46,8 +57,8 @@ const themeCss = injectTheme && primary ? themeToCss(primary) : "";
     {description && <meta name="description" content={description} />}
     {noIndex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href={favicon} />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={iconHref} />
+    <link rel="apple-touch-icon" href={appleTouchHref} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <meta property="og:type" content="website" />

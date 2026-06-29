@@ -1,6 +1,5 @@
 {
   "name": "Your Name",
-  "title": "Your tagline or role",
   "description": "Add a short bio here, then swap these starter links for your own.",
   "avatar": "/uploads/avatar-placeholder.svg",
   "showAttribution": true,
@@ -35,5 +34,7 @@
       "url": "mailto:you@yourdomain.com",
       "icon": "mail"
     }
-  ]
+  ],
+  "metaTitle": "",
+  "metaDescription": ""
 }
