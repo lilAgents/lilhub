@@ -174,8 +174,11 @@ function brandingRow(palette: ReturnType<typeof ogPalette>, markUri: string) {
 // --- Shared SVG -> PNG step ------------------------------------------------
 
 async function svgToPng(svg: string): Promise<Buffer> {
+  // Render at 2x the OG width so the avatar photo and text stay crisp. Social
+  // scrapers and browsers downscale the larger PNG smoothly; a 1x (1200px)
+  // render visibly softens raster avatars into a grainy look.
   const resvg = new Resvg(svg, {
-    fitTo: { mode: "width", value: OG_WIDTH },
+    fitTo: { mode: "width", value: OG_WIDTH * 2 },
   });
   return Buffer.from(resvg.render().asPng());
 }
