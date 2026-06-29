@@ -14,7 +14,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
-import { hexToHsl } from "./theme";
+import { generateTheme } from "./theme";
 
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
@@ -80,28 +80,20 @@ function lilHubMark(uri: string, size: number) {
 
 // --- Color helpers ---------------------------------------------------------
 
-function clamp(n: number, lo: number, hi: number) {
-  return Math.min(Math.max(n, lo), hi);
-}
-
-// Derive a small, tasteful palette from the owner's single brand color so the
-// card feels like "their" color without shouting: a near-white tinted canvas,
-// a legible brand ink for the name, and soft muted/border tones for the rest.
+// Pull the share card's palette straight from the owner's published-page theme
+// tokens (generateTheme), so the card and the page render in identical colors
+// instead of a separate clamped approximation.
 export function ogPalette(primaryHex: string) {
-  const { h, s, l } = hexToHsl(primaryHex);
-  const sat = clamp(s, 30, 90);
-  // Honor the user's chosen lightness, only clamped to stay legible on a light
-  // card, so the card's color matches the brand color they actually picked.
-  const lum = clamp(l, 42, 58);
+  const { light } = generateTheme(primaryHex);
+  // Tokens are shadcn "H S% L%" triplets; wrap them as hsl() for Satori.
+  const hsl = (triplet: string) => `hsl(${triplet.split(" ").join(", ")})`;
   return {
-    brand: `hsl(${h}, ${sat}%, ${lum}%)`, // accent bar + name + mark tile
-    brandSoft: `hsl(${h}, ${clamp(sat, 35, 70)}%, 94%)`, // very light tint background
-    bg: "#ffffff",
-    surfaceTint: `hsl(${h}, ${clamp(sat, 25, 60)}%, 97%)`, // subtle page wash
-    ink: "#1f2330", // name / strong text
-    muted: "#5b6170", // one-liner
-    avatarRing: `hsl(${h}, ${clamp(sat, 30, 70)}%, 88%)`,
-    avatarFallbackText: "#ffffff",
+    brand: hsl(light.primary), // accent bar + lilHub mark tile
+    bg: hsl(light.background), // page background
+    ink: hsl(light.foreground), // name + strong text (same as the page)
+    muted: hsl(light["muted-foreground"]), // one-liner (same as the page bio)
+    avatarRing: hsl(light.border), // soft avatar ring
+    avatarFallbackText: hsl(light["primary-foreground"]),
   };
 }
 
@@ -255,7 +247,7 @@ export async function renderProfileOg(
         height: OG_HEIGHT,
         display: "flex",
         fontFamily: "Poppins",
-        background: palette.surfaceTint,
+        background: palette.bg,
         position: "relative",
       },
       children: [
@@ -306,7 +298,7 @@ export async function renderProfileOg(
                                 display: "flex",
                                 fontSize: 72,
                                 fontWeight: 600,
-                                color: palette.brand,
+                                color: palette.ink,
                                 lineHeight: 1.1,
                               },
                               children: name,

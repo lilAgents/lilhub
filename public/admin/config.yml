@@ -33,6 +33,10 @@ public_folder: /uploads
 collections:
   - name: profile
     label: Profile
+    # The preview pane just echoes the fields and adds little here, so turn it
+    # off for a cleaner, single-column editor.
+    editor:
+      preview: false
     delete: false
     files:
       - name: profile
