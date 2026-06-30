@@ -22,8 +22,9 @@ backend:
   repo: owner/repo
   branch: main
   # Production GitHub sign-in goes through the shared lilAgents auth broker (a
-  # Cloudflare Worker on the team account). Every deployed lilHub points here.
-  base_url: https://lilhub-auth.lilagents.workers.dev
+  # Cloudflare Worker on the team account, custom domain auth.lilhub.me). Every
+  # deployed lilHub points here.
+  base_url: https://auth.lilhub.me
 
 # Avatar and any other uploads land in public/uploads. media_folder is the
 # real on-disk path; public_folder is the URL the site serves them from.
