@@ -47,7 +47,12 @@ collections:
         file: src/content/profile.json
         fields:
           - { name: name, label: Name, widget: string }
-          - { name: description, label: Description, widget: text }
+          - name: description
+            label: Description
+            widget: markdown
+            minimal: true
+            buttons: [bold, italic, link]
+            editor_components: []
           - { name: avatar, label: Profile Picture, widget: image }
           - {
               name: showAttribution,
