@@ -15,6 +15,7 @@ import { join } from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 import { generateTheme } from "./theme";
+import { bioToPlain } from "./bio";
 
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
@@ -194,7 +195,7 @@ export async function renderProfileOg(
   profile: ProfileLike,
 ): Promise<Buffer> {
   const name = (profile.name || "Your Name").trim();
-  const oneLiner = (profile.description || "").trim();
+  const oneLiner = bioToPlain(profile.description || "");
   const primary = profile.theme?.primary || LILHUB_BLUE;
   const palette = ogPalette(primary);
   const fonts = await loadFonts();

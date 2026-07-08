@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import LinkCard from "../components/LinkCard.astro";
 import Footer from "../components/Footer.astro";
+import { bioToHtml, bioToPlain } from "../lib/bio.ts";
 import profile from "../content/profile.json";
 
 // This is the linktree itself: the page each lilHub owner publishes. It reads
@@ -52,7 +53,7 @@ const metaTitle =
   `${name} | lilHub`;
 const metaDescription =
   ((profile as { metaDescription?: string }).metaDescription || "").trim() ||
-  description ||
+  bioToPlain(description) ||
   `${name} on lilHub`;
 ---
 
@@ -76,9 +77,10 @@ const metaDescription =
 
         {
           description && (
-            <p class="text-sm text-center text-muted-foreground max-w-xs mb-4">
-              {description}
-            </p>
+            <p
+              class="text-sm text-center text-muted-foreground max-w-xs mb-4"
+              set:html={bioToHtml(description)}
+            />
           )
         }
       </header>
