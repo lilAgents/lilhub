@@ -637,3 +637,14 @@ collections:
                   - zhihu
           - { name: metaTitle, label: "Meta Title (leave blank to use your name + lilHub)", widget: string, required: false }
           - { name: metaDescription, label: "Meta Description (leave blank to use your bio above)", widget: text, required: false }
+          - name: verified
+            label: "Verified badge (optional)"
+            widget: object
+            required: false
+            collapsed: true
+            summary: "Show a verified checkmark next to your name"
+            fields:
+              - { name: provider, label: "Provider", widget: select, options: ["realhandles", "keybase", "other"], default: "realhandles", required: false }
+              - { name: handle, label: "RealHandles username (only for the RealHandles provider)", widget: string, required: false }
+              - { name: url, label: "Profile URL (only for Keybase / other providers)", widget: string, required: false }
+              - { name: label, label: "Provider name shown in the tooltip (only for 'other')", widget: string, required: false }

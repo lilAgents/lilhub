@@ -4,6 +4,7 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 import LinkCard from "../components/LinkCard.astro";
 import Footer from "../components/Footer.astro";
 import { bioToHtml, bioToPlain } from "../lib/bio.ts";
+import { resolveVerified } from "../lib/verified.ts";
 import profile from "../content/profile.json";
 
 // This is the linktree itself: the page each lilHub owner publishes. It reads
@@ -55,6 +56,9 @@ const metaDescription =
   ((profile as { metaDescription?: string }).metaDescription || "").trim() ||
   bioToPlain(description) ||
   `${name} on lilHub`;
+
+// Optional verified badge (defaults to RealHandles, build-time confirmed).
+const verified = await resolveVerified(profile as Record<string, unknown>);
 ---
 
 <Layout title={metaTitle} description={metaDescription} ogImage="/og.png">
@@ -73,7 +77,25 @@ const metaDescription =
           height="80"
         />
 
-        <h1 class="text-2xl font-semibold text-foreground mb-1">{name}</h1>
+        <div class="flex items-center gap-1.5 mb-1">
+          <h1 class="text-2xl font-semibold text-foreground">{name}</h1>
+          {
+            verified && (
+              <a
+                href={verified.url}
+                target="_blank"
+                title={verified.label}
+                aria-label={verified.label}
+                class="text-primary hover:opacity-75 transition-opacity shrink-0"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+              </a>
+            )
+          }
+        </div>
 
         {
           description && (
