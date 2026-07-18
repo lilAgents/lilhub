@@ -53,6 +53,10 @@ const appleTouchHref = userAvatar ?? "/apple-touch-icon.png";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Identifies the page as a lilHub. RealHandles reads this when it verifies
+         the rel="me" link so it can show the page as a recognized lilHub, not a
+         generic link-in-bio. Harmless and standard otherwise. -->
+    <meta name="generator" content="lilHub" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {noIndex && <meta name="robots" content="noindex, follow" />}
